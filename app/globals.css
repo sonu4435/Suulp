@@ -1,0 +1,132 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Luxury Theme - Deep Navy/Black with Gold Accents */
+  --background: #0f1729;
+  --foreground: #f5f5f5;
+  --card: #1a2847;
+  --card-foreground: #f5f5f5;
+  --popover: #1a2847;
+  --popover-foreground: #f5f5f5;
+  --primary: #d4af37;
+  --primary-foreground: #0f1729;
+  --secondary: #2d4a7c;
+  --secondary-foreground: #f5f5f5;
+  --muted: #4a5f8f;
+  --muted-foreground: #a0aac0;
+  --accent: #d4af37;
+  --accent-foreground: #0f1729;
+  --destructive: #ef4444;
+  --destructive-foreground: #f5f5f5;
+  --border: #2d4a7c;
+  --input: #1a2847;
+  --ring: #d4af37;
+  --chart-1: #d4af37;
+  --chart-2: #2d4a7c;
+  --chart-3: #4a5f8f;
+  --chart-4: #6b8cc9;
+  --chart-5: #a0aac0;
+  --radius: 0.625rem;
+  --sidebar: #1a2847;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #d4af37;
+  --sidebar-primary-foreground: #0f1729;
+  --sidebar-accent: #2d4a7c;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #2d4a7c;
+  --sidebar-ring: #d4af37;
+}
+
+.dark {
+  --background: #0f1729;
+  --foreground: #f5f5f5;
+  --card: #1a2847;
+  --card-foreground: #f5f5f5;
+  --popover: #1a2847;
+  --popover-foreground: #f5f5f5;
+  --primary: #d4af37;
+  --primary-foreground: #0f1729;
+  --secondary: #2d4a7c;
+  --secondary-foreground: #f5f5f5;
+  --muted: #4a5f8f;
+  --muted-foreground: #a0aac0;
+  --accent: #d4af37;
+  --accent-foreground: #0f1729;
+  --destructive: #ef4444;
+  --destructive-foreground: #f5f5f5;
+  --border: #2d4a7c;
+  --input: #1a2847;
+  --ring: #d4af37;
+  --chart-1: #d4af37;
+  --chart-2: #2d4a7c;
+  --chart-3: #4a5f8f;
+  --chart-4: #6b8cc9;
+  --chart-5: #a0aac0;
+  --sidebar: #1a2847;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #d4af37;
+  --sidebar-primary-foreground: #0f1729;
+  --sidebar-accent: #2d4a7c;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #2d4a7c;
+  --sidebar-ring: #d4af37;
+}
+
+@theme inline {
+  --font-sans: "Poppins", "Segoe UI", sans-serif;
+  --font-serif: "Playfair Display", "Georgia", serif;
+  --font-mono: "Menlo", "Courier New", monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
