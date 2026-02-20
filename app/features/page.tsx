@@ -1,102 +1,39 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useTheme } from "@/components/ThemeContext";
-import { motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
-import { useScroll, useSpring, useMotionValue } from "framer-motion";
-import gsap from "gsap";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import {
   Globe,
-  Cpu,
   Zap,
   Shield,
-  Headphones,
-  Users,
-  Paintbrush,
   Database,
   Smartphone,
   ArrowRight,
   Layers,
-  Bot,
+  Users,
   Mic,
+  Bot,
   BarChart3,
   Puzzle,
   Download,
+  Paintbrush,
 } from "lucide-react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { ROYAL_CSS } from "@/components/shared-styles";
+import {
+  LiquidCursor,
+  NoiseOverlay,
+  RoyalNav,
+  RoyalFooter,
+  ProgressBar,
+  SectionTag,
+  Mag,
+} from "@/components/shared-components";
+import { useTheme } from "@/components/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function LiquidCursor({ dark }: { dark: boolean }) {
-  const cx = useMotionValue(-100),
-    cy = useMotionValue(-100);
-  const { useSpring: s } = require("framer-motion");
-  const fx = useSpring(cx, { stiffness: 55, damping: 18 });
-  const fy = useSpring(cy, { stiffness: 55, damping: 18 });
-  const [hov, setHov] = useState(false);
-  useEffect(() => {
-    const mv = (e: MouseEvent) => {
-      cx.set(e.clientX);
-      cy.set(e.clientY);
-    };
-    const enter = (e: Event) => {
-      if ((e.target as HTMLElement).closest("button,a,[data-hover]"))
-        setHov(true);
-    };
-    const leave = () => setHov(false);
-    window.addEventListener("mousemove", mv);
-    document.addEventListener("mouseover", enter);
-    document.addEventListener("mouseout", leave);
-    return () => {
-      window.removeEventListener("mousemove", mv);
-      document.removeEventListener("mouseover", enter);
-      document.removeEventListener("mouseout", leave);
-    };
-  }, []);
-  const gold = dark ? "#BFA06A" : "#7A5C2A";
-  return (
-    <>
-      <motion.div
-        style={{
-          x: cx,
-          y: cy,
-          translateX: "-50%",
-          translateY: "-50%",
-          width: 8,
-          height: 8,
-          background: gold,
-          borderRadius: "50%",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 9999,
-          pointerEvents: "none",
-        }}
-      />
-      <motion.div
-        style={{
-          x: fx,
-          y: fy,
-          translateX: "-50%",
-          translateY: "-50%",
-          width: hov ? 50 : 34,
-          height: hov ? 50 : 34,
-          border: `1px solid ${gold}`,
-          borderRadius: "50%",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 9998,
-          pointerEvents: "none",
-          opacity: hov ? 0.6 : 0.3,
-          transition:
-            "width 0.4s cubic-bezier(0.23,1,0.32,1),height 0.4s cubic-bezier(0.23,1,0.32,1)",
-        }}
-      />
-    </>
-  );
-}
 
 const PILLARS = [
   {
@@ -196,8 +133,17 @@ const EXTRAS = [
   },
 ];
 
+const PAGE_CSS = `
+  .pillar-reverse{direction:rtl}
+  .pillar-reverse>*{direction:ltr}
+  @media(max-width:640px){.pillar-reverse{direction:ltr}}
+  .extra-card{background:var(--bg);transition:border-color .4s,background .4s;}
+  .extra-card:hover{border-color:rgba(191,160,106,.3);background:var(--bg2);}
+  .marquee-track{display:flex;width:max-content;}
+`;
+
 export default function FeaturesPage() {
-  const { isDark: dark, toggleTheme: setDark } = useTheme();
+  const { isDark } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -219,174 +165,26 @@ export default function FeaturesPage() {
           stagger: 0.07,
         },
       );
-      gsap.to(".marquee-track", {
-        x: "-50%",
-        duration: 28,
-        repeat: -1,
-        ease: "linear",
-      });
+      gsap.to(".mq", { x: "-50%", duration: 28, repeat: -1, ease: "linear" });
     }, containerRef);
     return () => ctx.revert();
   }, []);
 
-  const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
-    *{cursor:none;box-sizing:border-box;margin:0;padding:0}
-    :root{--gold:#BFA06A;--gold-l:#E2C98A;--gold-d:#7A5C2A}
-    .dk{--bg:#070708;--bg2:#0D0D0F;--bg3:#131315;--fg:#F3EEE5;--fg2:rgba(243,238,229,.52);--fg3:rgba(243,238,229,.18);--brd:rgba(191,160,106,.1);--cbg:rgba(255,255,255,.016);--cg:#BFA06A;}
-    .lk{--bg:#F6F3ED;--bg2:#EDE9DF;--bg3:#E2DDD1;--fg:#19150E;--fg2:rgba(25,21,14,.52);--fg3:rgba(25,21,14,.2);--brd:rgba(191,160,106,.22);--cbg:rgba(255,255,255,.55);--cg:#7A5C2A;}
-    body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;font-weight:300;transition:background .5s,color .5s;overflow-x:hidden;}
-    .dp{font-family:'Playfair Display',serif;}
-    .gg{background:linear-gradient(135deg,#BFA06A 0%,#E2C98A 45%,#BFA06A 75%,#7A5C2A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .glass{background:var(--cbg);backdrop-filter:blur(24px) saturate(1.4);border:1px solid var(--brd);}
-    .noise-ov{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-    .bg-btn{background:linear-gradient(120deg,#BFA06A,#E2C98A,#BFA06A);background-size:200% auto;color:#08070A;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:background-position .6s,box-shadow .3s;}
-    .bg-btn:hover{background-position:right center;box-shadow:0 12px 50px rgba(191,160,106,.42);}
-    .bo-btn{border:1px solid var(--brd);color:var(--cg);font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:all .4s;position:relative;overflow:hidden;}
-    .bo-btn::after{content:'';position:absolute;inset:0;background:rgba(191,160,106,.07);transform:translateX(-100%);transition:transform .4s;}
-    .bo-btn:hover::after{transform:translateX(0);}
-    .bo-btn:hover{border-color:rgba(191,160,106,.45);}
-    .na{font-family:'DM Sans',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg2);transition:color .3s;position:relative;}
-    .na::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--cg);transition:width .35s;}
-    .na:hover{color:var(--cg);}.na:hover::after{width:100%;}
-    .gold-ln{display:block;height:1px;background:linear-gradient(90deg,transparent,#BFA06A,transparent);}
-    .prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--bg3);z-index:1000;}
-    .img-scale img{transition:transform .7s cubic-bezier(.23,1,.32,1);}
-    .img-scale:hover img{transform:scale(1.05);}
-    @keyframes f1{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-    @keyframes rslow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-    .fl1{animation:f1 7s ease-in-out infinite;}
-    .rs{animation:rslow 25s linear infinite;}
-    .extra-card{background:var(--bg);transition:border-color .4s,background .4s;}
-    .extra-card:hover{border-color:rgba(191,160,106,.3);background:var(--bg2);}
-    .marquee-track{display:flex;width:max-content;}
-  `;
-
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: CSS }} />
-      <div className={dark ? "dk" : "lk"}>
-        <div className="noise-ov" />
-        <LiquidCursor dark={dark} />
-        <div className="prog">
-          <motion.div
-            style={{
-              scaleX,
-              transformOrigin: "left",
-              height: "100%",
-              background: "linear-gradient(90deg,#7A5C2A,#BFA06A,#E2C98A)",
-            }}
-          />
-        </div>
+      <style dangerouslySetInnerHTML={{ __html: ROYAL_CSS + PAGE_CSS }} />
+      <div className={isDark ? "dk" : "lk"}>
+        <NoiseOverlay />
+        <LiquidCursor />
+        <ProgressBar scaleX={scaleX} />
+        <RoyalNav />
 
-        <main
-          ref={containerRef}
-          style={{ background: "var(--bg)", overflowX: "hidden" }}
-        >
-          {/* ── NAV ── */}
-          <motion.nav
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 50,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "18px 40px",
-              borderBottom: "1px solid var(--brd)",
-              backdropFilter: "blur(22px)",
-              background: dark ? "rgba(7,7,8,0.72)" : "rgba(246,243,237,0.72)",
-            }}
-          >
-            <Link href="/">
-              <span
-                className="dp gg"
-                style={{
-                  fontSize: 20,
-                  letterSpacing: "0.32em",
-                  fontWeight: 600,
-                }}
-              >
-                SUULP
-              </span>
-            </Link>
-            <div style={{ display: "flex", gap: 36 }}>
-              {["Features", "Pricing", "About", "Contact"].map((l) => (
-                <Link
-                  key={l}
-                  href={`/${l.toLowerCase()}`}
-                  className="na"
-                  style={l === "Features" ? { color: "var(--cg)" } : {}}
-                >
-                  {l}
-                </Link>
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-              <button
-                data-hover="true"
-                onClick={() => setDark()}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "7px 14px",
-                  borderRadius: 20,
-                  border: "1px solid var(--brd)",
-                  background: "var(--cbg)",
-                }}
-              >
-                <motion.div
-                  animate={{ rotate: dark ? 0 : 180 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {dark ? (
-                    <span style={{ fontSize: 12 }}>🌙</span>
-                  ) : (
-                    <span style={{ fontSize: 12 }}>☀️</span>
-                  )}
-                </motion.div>
-                <span
-                  style={{
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: "var(--fg2)",
-                  }}
-                >
-                  {dark ? "Dark" : "Light"}
-                </span>
-              </button>
-              <Link href="/signup">
-                <button
-                  className="bg-btn"
-                  style={{ padding: "10px 24px", borderRadius: 3 }}
-                >
-                  Start Free
-                </button>
-              </Link>
-            </div>
-          </motion.nav>
-
-          {/* ── HERO ── */}
+        <main ref={containerRef} className="page-wrap">
+          {/* HERO */}
           <section
-            style={{
-              minHeight: "70vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              padding: "140px 40px 80px",
-              maxWidth: 1600,
-              margin: "0 auto",
-              position: "relative",
-            }}
+            className="hero-pad"
+            style={{ maxWidth: 1600, margin: "0 auto", position: "relative" }}
           >
-            {/* Floating ring */}
             <div
               style={{
                 position: "absolute",
@@ -398,26 +196,8 @@ export default function FeaturesPage() {
             >
               <div
                 style={{
-                  width: 300,
-                  height: 300,
-                  border: "1px solid var(--cg)",
-                  borderRadius: "50%",
-                }}
-              />
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                right: "12%",
-                top: "25%",
-                opacity: 0.04,
-              }}
-              className="fl1"
-            >
-              <div
-                style={{
-                  width: 160,
-                  height: 160,
+                  width: "clamp(140px,22vw,300px)",
+                  height: "clamp(140px,22vw,300px)",
                   border: "1px solid var(--cg)",
                   borderRadius: "50%",
                 }}
@@ -428,94 +208,52 @@ export default function FeaturesPage() {
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                marginBottom: 32,
-              }}
             >
-              <div style={{ height: 1, width: 32, background: "var(--cg)" }} />
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.45em",
-                  textTransform: "uppercase",
-                  color: "var(--cg)",
-                }}
-              >
-                Platform Capabilities
-              </span>
+              <SectionTag label="Platform Capabilities" />
             </motion.div>
 
-            <div style={{ overflow: "hidden" }}>
-              <motion.h1
-                className="dp gg"
-                style={{
-                  fontSize: "clamp(3.5rem, 9vw, 120px)",
-                  lineHeight: 0.9,
-                  letterSpacing: "-0.02em",
-                }}
-                initial={{ y: 120, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.5,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                Everything
-              </motion.h1>
-            </div>
-            <div style={{ overflow: "hidden" }}>
-              <motion.h1
-                className="dp"
-                style={{
-                  fontSize: "clamp(3.5rem, 9vw, 120px)",
-                  lineHeight: 0.9,
-                  letterSpacing: "-0.02em",
-                  color: "rgba(225, 206, 172, 0.88)",
-                  marginBottom: 4,
-                }}
-                initial={{ y: 120, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.65,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                You Need to
-              </motion.h1>
-            </div>
-            <div style={{ overflow: "hidden" }}>
-              <motion.h1
-                className="dp"
-                style={{
-                  fontSize: "clamp(3.5rem, 9vw, 120px)",
-                  lineHeight: 0.9,
-                  letterSpacing: "-0.02em",
-                  fontStyle: "italic",
-                  color: "rgba(82, 72, 55, 0.22)",
-                }}
-                initial={{ y: 120, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.8,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                Build & Grow.
-              </motion.h1>
-            </div>
+            {["Everything", "You Need to", "Build & Grow."].map((line, i) => (
+              <div key={i} className="lo">
+                <motion.h1
+                  className={
+                    i === 0
+                      ? "dp gg"
+                      : i === 1
+                        ? "dp"
+                        : isDark
+                          ? "dp text-amber-50 italic"
+                          : "dp"
+                  }
+                  style={{
+                    fontSize: "clamp(2.8rem,9vw,120px)",
+                    lineHeight: 0.9,
+                    letterSpacing: "-0.02em",
+                    color:
+                      i === 1
+                        ? `rgba(${isDark ? "242,237,227" : "23,18,10"},.87)`
+                        : undefined,
+                    fontStyle: i === 2 ? "italic" : undefined,
+                    opacity: i === 2 ? 0.22 : undefined,
+                  }}
+                  initial={{ y: 120, opacity: 0 }}
+                  animate={{ y: 0, opacity: i === 2 ? 0.22 : 1 }}
+                  transition={{
+                    duration: 1.2,
+                    delay: 0.5 + i * 0.15,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                >
+                  {line}
+                </motion.h1>
+              </div>
+            ))}
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 1 }}
               style={{
-                fontSize: "0.9rem",
+                fontSize: ".9rem",
                 color: "var(--fg2)",
                 lineHeight: 1.9,
                 maxWidth: 500,
@@ -527,7 +265,7 @@ export default function FeaturesPage() {
             </motion.p>
           </section>
 
-          {/* ── MARQUEE ── */}
+          {/* MARQUEE */}
           <div
             style={{
               borderTop: "1px solid var(--brd)",
@@ -536,7 +274,7 @@ export default function FeaturesPage() {
               overflow: "hidden",
             }}
           >
-            <div className="marquee-track">
+            <div className="mq">
               {[...Array(6)].flatMap((_, ri) =>
                 [
                   "AI Builder",
@@ -559,8 +297,8 @@ export default function FeaturesPage() {
                   >
                     <span
                       style={{
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.42em",
+                        fontSize: ".6rem",
+                        letterSpacing: ".42em",
                         textTransform: "uppercase",
                         color: "var(--fg3)",
                         whiteSpace: "nowrap",
@@ -574,7 +312,7 @@ export default function FeaturesPage() {
                         cy="2"
                         r="2"
                         fill="var(--cg)"
-                        opacity="0.35"
+                        opacity=".35"
                       />
                     </svg>
                   </div>
@@ -583,31 +321,23 @@ export default function FeaturesPage() {
             </div>
           </div>
 
-          {/* ── FEATURE PILLARS ── */}
+          {/* FEATURE PILLARS */}
           <section
-            style={{ padding: "80px 40px", maxWidth: 1600, margin: "0 auto" }}
+            className="sec-pad"
+            style={{ maxWidth: 1600, margin: "0 auto" }}
           >
             {PILLARS.map((pillar, i) => {
               const Icon = pillar.icon;
-              const isOdd = i % 2 !== 0;
               return (
                 <motion.div
                   key={i}
+                  className={`pillar-sec${i % 2 !== 0 ? " pillar-reverse" : ""}`}
                   initial={{ opacity: 0, y: 60 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 1 }}
                   viewport={{ once: true }}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
-                    gap: 64,
-                    alignItems: "center",
-                    marginBottom: 120,
-                    direction: isOdd ? "rtl" : "ltr",
-                  }}
                 >
-                  {/* Text */}
-                  <div style={{ direction: "ltr" }}>
+                  <div>
                     <div
                       style={{
                         display: "flex",
@@ -619,8 +349,8 @@ export default function FeaturesPage() {
                       <Icon size={18} color="var(--cg)" strokeWidth={1.5} />
                       <span
                         style={{
-                          fontSize: "0.6rem",
-                          letterSpacing: "0.42em",
+                          fontSize: ".6rem",
+                          letterSpacing: ".42em",
                           textTransform: "uppercase",
                           color: "var(--cg)",
                         }}
@@ -631,7 +361,7 @@ export default function FeaturesPage() {
                     <h2
                       className="dp"
                       style={{
-                        fontSize: "clamp(1.8rem, 3.5vw, 48px)",
+                        fontSize: "clamp(1.6rem,3.5vw,48px)",
                         lineHeight: 1.1,
                         color: "var(--fg)",
                         marginBottom: 20,
@@ -642,7 +372,7 @@ export default function FeaturesPage() {
                     <p
                       style={{
                         color: "var(--fg2)",
-                        fontSize: "0.87rem",
+                        fontSize: ".87rem",
                         lineHeight: 1.9,
                         marginBottom: 32,
                         maxWidth: 460,
@@ -676,7 +406,7 @@ export default function FeaturesPage() {
                             }}
                           />
                           <span
-                            style={{ fontSize: "0.82rem", color: "var(--fg2)" }}
+                            style={{ fontSize: ".82rem", color: "var(--fg2)" }}
                           >
                             {d}
                           </span>
@@ -701,19 +431,7 @@ export default function FeaturesPage() {
                       </button>
                     </Link>
                   </div>
-
-                  {/* Image */}
-                  <div
-                    className="img-scale"
-                    style={{
-                      direction: "ltr",
-                      borderRadius: 4,
-                      overflow: "hidden",
-                      border: "1px solid var(--brd)",
-                      position: "relative",
-                      height: 380,
-                    }}
-                  >
+                  <div className="pillar-img img-scale">
                     <img
                       src={pillar.img}
                       alt={pillar.title}
@@ -728,7 +446,7 @@ export default function FeaturesPage() {
                         position: "absolute",
                         inset: 0,
                         background:
-                          "linear-gradient(to top, var(--bg) 0%, transparent 60%)",
+                          "linear-gradient(to top,var(--bg) 0%,transparent 60%)",
                       }}
                     />
                     <div
@@ -743,8 +461,8 @@ export default function FeaturesPage() {
                     >
                       <span
                         style={{
-                          fontSize: "0.6rem",
-                          letterSpacing: "0.3em",
+                          fontSize: ".6rem",
+                          letterSpacing: ".3em",
                           textTransform: "uppercase",
                           color: "var(--cg)",
                         }}
@@ -758,8 +476,8 @@ export default function FeaturesPage() {
             })}
           </section>
 
-          {/* ── EXTRAS GRID ── */}
-          <section style={{ padding: "80px 40px", background: "var(--bg2)" }}>
+          {/* EXTRAS GRID */}
+          <section className="sec-pad" style={{ background: "var(--bg2)" }}>
             <div style={{ maxWidth: 1600, margin: "0 auto" }}>
               <div
                 style={{
@@ -772,32 +490,11 @@ export default function FeaturesPage() {
                 }}
               >
                 <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      marginBottom: 18,
-                    }}
-                  >
-                    <div
-                      style={{ height: 1, width: 28, background: "var(--cg)" }}
-                    />
-                    <span
-                      style={{
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.42em",
-                        textTransform: "uppercase",
-                        color: "var(--cg)",
-                      }}
-                    >
-                      And More
-                    </span>
-                  </div>
+                  <SectionTag label="And More" />
                   <motion.h2
                     className="dp"
                     style={{
-                      fontSize: "clamp(2rem, 4vw, 56px)",
+                      fontSize: "clamp(2rem,4vw,56px)",
                       lineHeight: 1.05,
                       color: "var(--fg)",
                     }}
@@ -812,7 +509,7 @@ export default function FeaturesPage() {
                 <p
                   style={{
                     color: "var(--fg2)",
-                    fontSize: "0.87rem",
+                    fontSize: ".87rem",
                     lineHeight: 1.85,
                     maxWidth: 360,
                   }}
@@ -821,15 +518,9 @@ export default function FeaturesPage() {
                   configured, and ready to use on day one.
                 </p>
               </div>
-
               <div
-                className="extras-grid"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
-                  gap: 1,
-                  background: "var(--brd)",
-                }}
+                className="extras-grid grid-3"
+                style={{ background: "var(--brd)" }}
               >
                 {EXTRAS.map((e, i) => {
                   const Icon = e.icon;
@@ -838,9 +529,7 @@ export default function FeaturesPage() {
                       key={i}
                       className="extra-card"
                       style={{
-                        padding: "36px 32px",
-                        border: "1px solid transparent",
-                        borderRadius: 0,
+                        padding: "clamp(24px,4vw,36px) clamp(20px,3vw,32px)",
                       }}
                     >
                       <Icon
@@ -862,7 +551,7 @@ export default function FeaturesPage() {
                       <p
                         style={{
                           color: "var(--fg2)",
-                          fontSize: "0.8rem",
+                          fontSize: ".8rem",
                           lineHeight: 1.8,
                         }}
                       >
@@ -875,10 +564,10 @@ export default function FeaturesPage() {
             </div>
           </section>
 
-          {/* ── CTA ── */}
+          {/* CTA */}
           <section
+            className="sec-pad"
             style={{
-              padding: "100px 40px",
               textAlign: "center",
               position: "relative",
               overflow: "hidden",
@@ -911,7 +600,7 @@ export default function FeaturesPage() {
               <h2
                 className="dp"
                 style={{
-                  fontSize: "clamp(2rem, 4.5vw, 60px)",
+                  fontSize: "clamp(2rem,4.5vw,60px)",
                   lineHeight: 1.1,
                   color: "var(--fg)",
                   marginBottom: 20,
@@ -924,73 +613,35 @@ export default function FeaturesPage() {
               <p
                 style={{
                   color: "var(--fg2)",
-                  fontSize: "0.87rem",
+                  fontSize: ".87rem",
                   marginBottom: 36,
                   lineHeight: 1.85,
                 }}
               >
                 Start with a 14-day free trial. No credit card. No setup fees.
               </p>
-              <Link href="/signup">
-                <button
-                  className="bg-btn"
-                  style={{
-                    padding: "16px 56px",
-                    borderRadius: 3,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  Start Building Free <ArrowRight size={14} />
-                </button>
-              </Link>
+              <div className="cta-btns">
+                <Mag>
+                  <Link href="/signup">
+                    <button
+                      className="bg-btn"
+                      style={{
+                        padding: "16px 56px",
+                        borderRadius: 3,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      Start Building Free <ArrowRight size={14} />
+                    </button>
+                  </Link>
+                </Mag>
+              </div>
             </motion.div>
           </section>
 
-          {/* ── FOOTER ── */}
-          <footer
-            style={{
-              borderTop: "1px solid var(--brd)",
-              padding: "36px 40px",
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 20,
-            }}
-          >
-            <span
-              className="dp gg"
-              style={{ fontSize: 18, letterSpacing: "0.35em", fontWeight: 600 }}
-            >
-              SUULP
-            </span>
-            <div style={{ display: "flex", gap: 36 }}>
-              {[
-                "Features",
-                "Pricing",
-                "About",
-                "Contact",
-                "Privacy",
-                "Terms",
-              ].map((l) => (
-                <Link key={l} href={`/${l.toLowerCase()}`} className="na">
-                  {l}
-                </Link>
-              ))}
-            </div>
-            <p
-              style={{
-                fontSize: "0.6rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "var(--fg3)",
-              }}
-            >
-              © 2026 Suulp
-            </p>
-          </footer>
+          <RoyalFooter />
         </main>
       </div>
     </>

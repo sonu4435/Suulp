@@ -1,59 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Loader, ArrowRight } from "lucide-react";
-import { LiquidCursor } from "@/components/navbar";
+import { ROYAL_CSS } from "@/components/shared-styles";
+import {
+  LiquidCursor,
+  NoiseOverlay,
+  SectionTag,
+} from "@/components/shared-components";
 import { useTheme } from "@/components/ThemeContext";
 
-const SHARED_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
-  *{cursor:none;box-sizing:border-box;margin:0;padding:0}
-  :root{--gold:#BFA06A;--gold-l:#E2C98A;--gold-d:#7A5C2A}
-  .dk{--bg:#070708;--bg2:#0D0D0F;--bg3:#131315;--fg:#F3EEE5;--fg2:rgba(243,238,229,.52);--fg3:rgba(243,238,229,.18);--brd:rgba(191,160,106,.1);--cbg:rgba(255,255,255,.016);--cg:#BFA06A;}
-  .lk{--bg:#F6F3ED;--bg2:#EDE9DF;--bg3:#E2DDD1;--fg:#19150E;--fg2:rgba(25,21,14,.52);--fg3:rgba(25,21,14,.2);--brd:rgba(191,160,106,.22);--cbg:rgba(255,255,255,.55);--cg:#7A5C2A;}
-  body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;font-weight:300;transition:background .5s,color .5s;overflow-x:hidden;}
-  .dp{font-family:'Playfair Display',serif;}
-  .gg{background:linear-gradient(135deg,#BFA06A 0%,#E2C98A 45%,#BFA06A 75%,#7A5C2A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  .glass{background:var(--cbg);backdrop-filter:blur(24px) saturate(1.4);border:1px solid var(--brd);}
-  .noise-ov{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-  .bg-btn{background:linear-gradient(120deg,#BFA06A,#E2C98A,#BFA06A);background-size:200% auto;color:#08070A;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:background-position .6s,box-shadow .3s;}
-  .bg-btn:hover{background-position:right center;box-shadow:0 12px 50px rgba(191,160,106,.42);}
-  .bo-btn{border:1px solid var(--brd);color:var(--cg);font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:all .4s;position:relative;overflow:hidden;}
-  .bo-btn::after{content:'';position:absolute;inset:0;background:rgba(191,160,106,.07);transform:translateX(-100%);transition:transform .4s;}
-  .bo-btn:hover::after{transform:translateX(0);}
-  .bo-btn:hover{border-color:rgba(191,160,106,.45);}
-  .na{font-family:'DM Sans',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg2);transition:color .3s;position:relative;}
-  .na::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--cg);transition:width .35s;}
-  .na:hover{color:var(--cg);}.na:hover::after{width:100%;}
-  .prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--bg3);z-index:1000;}
-  .royal-input{width:100%;padding:14px 18px;background:var(--cbg);border:1px solid var(--brd);color:var(--fg);font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:300;transition:border-color .3s,box-shadow .3s;outline:none;backdrop-filter:blur(10px);border-radius:3px;}
-  .royal-input::placeholder{color:var(--fg3);}
-  .royal-input:focus{border-color:rgba(191,160,106,.5);box-shadow:0 0 0 3px rgba(191,160,106,.06);}
-  .royal-label{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--fg3);margin-bottom:8px;display:block;}
-  @keyframes f1{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-  @keyframes rslow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-  @keyframes rslow-r{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-  .fl1{animation:f1 7s ease-in-out infinite;}
-  .rs{animation:rslow 22s linear infinite;}
-  .rsr{animation:rslow-r 30s linear infinite;}
-  .marquee-track{display:flex;width:max-content;}
-  .img-scale img{transition:transform .7s cubic-bezier(.23,1,.32,1);}
-  .img-scale:hover img{transform:scale(1.04);}
-`;
-
-/* ═══ LOGIN PAGE ═══ */
-export function LoginPage() {
-  const { isDark: dark, toggleTheme: setDark } = useTheme();
+export default function LoginPage() {
+  const { isDark, toggleTheme } = useTheme();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const { useRouter, useSearchParams } = require("next/navigation");
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams?.get("message");
@@ -78,53 +44,50 @@ export function LoginPage() {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: SHARED_CSS }} />
-      <div className={dark ? "dk" : "lk"}>
-        <div className="noise-ov" />
-        <LiquidCursor dark={dark} />
-
-        <main
-          style={{
-            background: "var(--bg)",
-            minHeight: "100vh",
-            display: "flex",
-            overflowX: "hidden",
-          }}
-        >
-          {/* Left panel */}
-          <div
-            style={{
-              flex: 1,
-              display: "none",
-              position: "relative",
-              minHeight: "100vh",
-            }}
-            className="lg-panel"
-          >
+      <style
+        dangerouslySetInnerHTML={{
+          __html:
+            ROYAL_CSS +
+            `@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`,
+        }}
+      />
+      <div className={isDark ? "dk" : "lk"}>
+        <NoiseOverlay />
+        <LiquidCursor />
+        <main className="auth-wrap" style={{ background: "var(--bg)" }}>
+          {/* LEFT VISUAL */}
+          <div className="auth-left">
             <img
               src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900&q=80"
               alt="Dashboard"
               style={{
+                position: "absolute",
+                inset: 0,
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
-                filter: "brightness(0.3) saturate(0.4)",
+                filter: "brightness(.3) saturate(.4)",
               }}
             />
             <div
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "linear-gradient(to right, transparent, var(--bg))",
+                background: "linear-gradient(to right,transparent,var(--bg))",
               }}
             />
             <div
-              style={{ position: "absolute", bottom: 60, left: 60, right: 60 }}
+              style={{
+                position: "absolute",
+                bottom: "clamp(32px,5vw,60px)",
+                left: "clamp(32px,5vw,60px)",
+                right: "clamp(32px,5vw,60px)",
+              }}
             >
               <p
                 className="dp italic"
                 style={{
-                  fontSize: 28,
+                  fontSize: "clamp(18px,2.2vw,28px)",
                   color: "var(--fg)",
                   opacity: 0.8,
                   lineHeight: 1.5,
@@ -136,8 +99,8 @@ export function LoginPage() {
               </p>
               <p
                 style={{
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.3em",
+                  fontSize: ".7rem",
+                  letterSpacing: ".3em",
                   textTransform: "uppercase",
                   color: "var(--cg)",
                 }}
@@ -147,45 +110,15 @@ export function LoginPage() {
             </div>
           </div>
 
-          {/* Right panel — form */}
-          <div
-            style={{
-              flex: "0 0 min(100%, 560px)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              padding: "60px 40px",
-              minHeight: "100vh",
-              position: "relative",
-            }}
-          >
-            {/* Decorative rings */}
-            <div
-              style={{
-                position: "absolute",
-                right: -100,
-                top: "30%",
-                opacity: 0.06,
-              }}
-            >
-              <div
-                style={{
-                  width: 300,
-                  height: 300,
-                  border: "1px solid var(--cg)",
-                  borderRadius: "50%",
-                }}
-                className="rs"
-              />
-            </div>
-
-            {/* Nav row */}
+          {/* RIGHT FORM */}
+          <div className="auth-right">
+            {/* Top nav */}
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: 60,
+                marginBottom: "clamp(32px,5vw,60px)",
               }}
             >
               <Link href="/">
@@ -193,7 +126,7 @@ export function LoginPage() {
                   className="dp gg"
                   style={{
                     fontSize: 20,
-                    letterSpacing: "0.32em",
+                    letterSpacing: ".32em",
                     fontWeight: 600,
                   }}
                 >
@@ -202,19 +135,19 @@ export function LoginPage() {
               </Link>
               <button
                 data-hover="true"
-                onClick={() => setDark()}
+                onClick={toggleTheme}
                 style={{
                   padding: "6px 14px",
                   borderRadius: 20,
                   border: "1px solid var(--brd)",
                   background: "var(--cbg)",
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.15em",
+                  fontSize: ".6rem",
+                  letterSpacing: ".15em",
                   textTransform: "uppercase",
                   color: "var(--fg2)",
                 }}
               >
-                {dark ? "🌙 Dark" : "☀️ Light"}
+                {isDark ? "🌙 Dark" : "☀️ Light"}
               </button>
             </div>
 
@@ -225,10 +158,10 @@ export function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   style={{
                     padding: "14px 18px",
-                    border: "1px solid rgba(191,160,106,0.3)",
-                    background: "rgba(191,160,106,0.07)",
+                    border: "1px solid rgba(191,160,106,.3)",
+                    background: "rgba(191,160,106,.07)",
                     borderRadius: 3,
-                    fontSize: "0.82rem",
+                    fontSize: ".82rem",
                     color: "var(--cg)",
                     marginBottom: 24,
                   }}
@@ -243,32 +176,11 @@ export function LoginPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  marginBottom: 20,
-                }}
-              >
-                <div
-                  style={{ height: 1, width: 24, background: "var(--cg)" }}
-                />
-                <span
-                  style={{
-                    fontSize: "0.58rem",
-                    letterSpacing: "0.42em",
-                    textTransform: "uppercase",
-                    color: "var(--cg)",
-                  }}
-                >
-                  Welcome Back
-                </span>
-              </div>
+              <SectionTag label="Welcome Back" />
               <h1
                 className="dp"
                 style={{
-                  fontSize: "clamp(2rem, 4vw, 48px)",
+                  fontSize: "clamp(1.8rem,4vw,48px)",
                   lineHeight: 1.05,
                   color: "var(--fg)",
                   marginBottom: 8,
@@ -279,7 +191,7 @@ export function LoginPage() {
               <p
                 style={{
                   color: "var(--fg2)",
-                  fontSize: "0.87rem",
+                  fontSize: ".87rem",
                   marginBottom: 40,
                   lineHeight: 1.7,
                 }}
@@ -318,8 +230,8 @@ export function LoginPage() {
                     <Link
                       href="#"
                       style={{
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.2em",
+                        fontSize: ".6rem",
+                        letterSpacing: ".2em",
                         textTransform: "uppercase",
                         color: "var(--cg)",
                         textDecoration: "none",
@@ -349,8 +261,8 @@ export function LoginPage() {
                         top: "50%",
                         transform: "translateY(-50%)",
                         color: "var(--fg3)",
-                        fontSize: "0.65rem",
-                        letterSpacing: "0.15em",
+                        fontSize: ".65rem",
+                        letterSpacing: ".15em",
                       }}
                     >
                       {showPass ? "HIDE" : "SHOW"}
@@ -366,10 +278,10 @@ export function LoginPage() {
                       exit={{ opacity: 0 }}
                       style={{
                         padding: "14px 18px",
-                        border: "1px solid rgba(239,68,68,0.3)",
-                        background: "rgba(239,68,68,0.06)",
+                        border: "1px solid rgba(239,68,68,.3)",
+                        background: "rgba(239,68,68,.06)",
                         borderRadius: 3,
-                        fontSize: "0.82rem",
+                        fontSize: ".82rem",
                         color: "#f87171",
                       }}
                     >
@@ -412,7 +324,7 @@ export function LoginPage() {
               <p
                 style={{
                   textAlign: "center",
-                  fontSize: "0.78rem",
+                  fontSize: ".78rem",
                   color: "var(--fg3)",
                   marginTop: 28,
                 }}
@@ -426,7 +338,6 @@ export function LoginPage() {
                 </Link>
               </p>
 
-              {/* Trust line */}
               <div
                 style={{
                   display: "flex",
@@ -438,8 +349,8 @@ export function LoginPage() {
                 <div style={{ flex: 1, height: 1, background: "var(--brd)" }} />
                 <span
                   style={{
-                    fontSize: "0.58rem",
-                    letterSpacing: "0.3em",
+                    fontSize: ".58rem",
+                    letterSpacing: ".3em",
                     color: "var(--fg3)",
                     textTransform: "uppercase",
                   }}

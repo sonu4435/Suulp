@@ -1,89 +1,24 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTheme } from "@/components/ThemeContext";
-import {
-  motion,
-  useScroll,
-  useSpring,
-  useMotionValue,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { ROYAL_CSS } from "@/components/shared-styles";
+import {
+  LiquidCursor,
+  NoiseOverlay,
+  RoyalNav,
+  RoyalFooter,
+  ProgressBar,
+  SectionTag,
+  Mag,
+} from "@/components/shared-components";
+import { useTheme } from "@/components/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function LiquidCursor({ dark }: { dark: boolean }) {
-  const cx = useMotionValue(-100),
-    cy = useMotionValue(-100);
-  const fx = useSpring(cx, { stiffness: 55, damping: 18 }),
-    fy = useSpring(cy, { stiffness: 55, damping: 18 });
-  const [hov, setHov] = useState(false);
-  useEffect(() => {
-    const mv = (e: MouseEvent) => {
-      cx.set(e.clientX);
-      cy.set(e.clientY);
-    };
-    const enter = (e: Event) => {
-      if ((e.target as HTMLElement).closest("button,a,[data-hover]"))
-        setHov(true);
-    };
-    const leave = () => setHov(false);
-    window.addEventListener("mousemove", mv);
-    document.addEventListener("mouseover", enter);
-    document.addEventListener("mouseout", leave);
-    return () => {
-      window.removeEventListener("mousemove", mv);
-      document.removeEventListener("mouseover", enter);
-      document.removeEventListener("mouseout", leave);
-    };
-  }, []);
-  const gold = dark ? "#BFA06A" : "#7A5C2A";
-  return (
-    <>
-      <motion.div
-        style={{
-          x: cx,
-          y: cy,
-          translateX: "-50%",
-          translateY: "-50%",
-          width: 8,
-          height: 8,
-          background: gold,
-          borderRadius: "50%",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 9999,
-          pointerEvents: "none",
-        }}
-      />
-      <motion.div
-        style={{
-          x: fx,
-          y: fy,
-          translateX: "-50%",
-          translateY: "-50%",
-          width: hov ? 50 : 34,
-          height: hov ? 50 : 34,
-          border: `1px solid ${gold}`,
-          borderRadius: "50%",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 9998,
-          pointerEvents: "none",
-          opacity: hov ? 0.6 : 0.3,
-          transition:
-            "width 0.4s cubic-bezier(0.23,1,0.32,1),height 0.4s cubic-bezier(0.23,1,0.32,1)",
-        }}
-      />
-    </>
-  );
-}
 
 const PLANS = [
   {
@@ -94,11 +29,11 @@ const PLANS = [
     desc: "For individuals & solo founders starting out.",
     features: [
       "1 website",
-      "AI builder (3 generations/mo)",
+      "AI builder (3/mo)",
       "Drag & drop CMS",
       "Basic CRM (500 contacts)",
       "Suulp subdomain",
-      "5GB storage",
+      "5 GB storage",
       "Email support",
     ],
     notIncluded: [
@@ -124,7 +59,7 @@ const PLANS = [
       "Advanced CRM & CSM (10K contacts)",
       "Custom domain + SSL",
       "Connected database",
-      "50GB storage",
+      "50 GB storage",
       "AI Voice Concierge (ElevenLabs)",
       "Mobile app generation",
       "Priority support",
@@ -239,7 +174,7 @@ const FAQS = [
 ];
 
 export default function PricingPage() {
-  const { isDark: dark, toggleTheme: setDark } = useTheme();
+  const { isDark } = useTheme();
   const [annual, setAnnual] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -264,163 +199,25 @@ export default function PricingPage() {
           stagger: 0.1,
         },
       );
-      gsap.to(".marquee-track", {
-        x: "-50%",
-        duration: 28,
-        repeat: -1,
-        ease: "linear",
-      });
+      gsap.to(".mq", { x: "-50%", duration: 28, repeat: -1, ease: "linear" });
     }, containerRef);
     return () => ctx.revert();
   }, []);
 
-  const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
-    *{cursor:none;box-sizing:border-box;margin:0;padding:0}
-    :root{--gold:#BFA06A;--gold-l:#E2C98A;--gold-d:#7A5C2A}
-    .dk{--bg:#070708;--bg2:#0D0D0F;--bg3:#131315;--fg:#F3EEE5;--fg2:rgba(243,238,229,.52);--fg3:rgba(243,238,229,.18);--brd:rgba(191,160,106,.1);--cbg:rgba(255,255,255,.016);--cg:#BFA06A;}
-    .lk{--bg:#F6F3ED;--bg2:#EDE9DF;--bg3:#E2DDD1;--fg:#19150E;--fg2:rgba(25,21,14,.52);--fg3:rgba(25,21,14,.2);--brd:rgba(191,160,106,.22);--cbg:rgba(255,255,255,.55);--cg:#7A5C2A;}
-    body{background:var(--bg);color:var(--fg);font-family:'DM Sans',sans-serif;font-weight:300;transition:background .5s,color .5s;overflow-x:hidden;}
-    .dp{font-family:'Playfair Display',serif;}
-    .gg{background:linear-gradient(135deg,#BFA06A 0%,#E2C98A 45%,#BFA06A 75%,#7A5C2A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-    .glass{background:var(--cbg);backdrop-filter:blur(24px) saturate(1.4);border:1px solid var(--brd);}
-    .noise-ov{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-    .bg-btn{background:linear-gradient(120deg,#BFA06A,#E2C98A,#BFA06A);background-size:200% auto;color:#08070A;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:background-position .6s,box-shadow .3s;}
-    .bg-btn:hover{background-position:right center;box-shadow:0 12px 50px rgba(191,160,106,.42);}
-    .bo-btn{border:1px solid var(--brd);color:var(--cg);font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;transition:all .4s;position:relative;overflow:hidden;}
-    .bo-btn::after{content:'';position:absolute;inset:0;background:rgba(191,160,106,.07);transform:translateX(-100%);transition:transform .4s;}
-    .bo-btn:hover::after{transform:translateX(0);}
-    .bo-btn:hover{border-color:rgba(191,160,106,.45);}
-    .na{font-family:'DM Sans',sans-serif;font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg2);transition:color .3s;position:relative;}
-    .na::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:var(--cg);transition:width .35s;}
-    .na:hover{color:var(--cg);}.na:hover::after{width:100%;}
-    .gold-ln{display:block;height:1px;background:linear-gradient(90deg,transparent,#BFA06A,transparent);}
-    .prog{position:fixed;top:0;left:0;right:0;height:2px;background:var(--bg3);z-index:1000;}
-    @keyframes f1{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-    @keyframes rslow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-    @keyframes rslow-r{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-    .fl1{animation:f1 7s ease-in-out infinite;}
-    .rs{animation:rslow 22s linear infinite;}
-    .rsr{animation:rslow-r 30s linear infinite;}
-    .marquee-track{display:flex;width:max-content;}
-    .faq-item{border-bottom:1px solid var(--brd);transition:background .3s;}
-    .plan-card{position:relative;}
-    .compare-row:hover{background:rgba(191,160,106,0.03);}
-  `;
-
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: CSS }} />
-      <div className={dark ? "dk" : "lk"}>
-        <div className="noise-ov" />
-        <LiquidCursor dark={dark} />
-        <div className="prog">
-          <motion.div
-            style={{
-              scaleX,
-              transformOrigin: "left",
-              height: "100%",
-              background: "linear-gradient(90deg,#7A5C2A,#BFA06A,#E2C98A)",
-            }}
-          />
-        </div>
+      <style dangerouslySetInnerHTML={{ __html: ROYAL_CSS }} />
+      <div className={isDark ? "dk" : "lk"}>
+        <NoiseOverlay />
+        <LiquidCursor />
+        <ProgressBar scaleX={scaleX} />
+        <RoyalNav />
 
-        <main
-          ref={containerRef}
-          style={{ background: "var(--bg)", overflowX: "hidden" }}
-        >
-          {/* NAV */}
-          <motion.nav
-            initial={{ y: -80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 50,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "18px 40px",
-              borderBottom: "1px solid var(--brd)",
-              backdropFilter: "blur(22px)",
-              background: dark ? "rgba(7,7,8,0.72)" : "rgba(246,243,237,0.72)",
-            }}
-          >
-            <Link href="/">
-              <span
-                className="dp gg"
-                style={{
-                  fontSize: 20,
-                  letterSpacing: "0.32em",
-                  fontWeight: 600,
-                }}
-              >
-                SUULP
-              </span>
-            </Link>
-            <div style={{ display: "flex", gap: 36 }}>
-              {["Features", "Pricing", "About", "Contact"].map((l) => (
-                <Link
-                  key={l}
-                  href={`/${l.toLowerCase()}`}
-                  className="na"
-                  style={l === "Pricing" ? { color: "var(--cg)" } : {}}
-                >
-                  {l}
-                </Link>
-              ))}
-            </div>
-            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-              <button
-                data-hover="true"
-                onClick={() => setDark()}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "7px 14px",
-                  borderRadius: 20,
-                  border: "1px solid var(--brd)",
-                  background: "var(--cbg)",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: "var(--fg2)",
-                  }}
-                >
-                  {dark ? "🌙 Dark" : "☀️ Light"}
-                </span>
-              </button>
-              <Link href="/signup">
-                <button
-                  className="bg-btn"
-                  style={{ padding: "10px 24px", borderRadius: 3 }}
-                >
-                  Start Free
-                </button>
-              </Link>
-            </div>
-          </motion.nav>
-
+        <main ref={containerRef} className="page-wrap">
           {/* HERO */}
           <section
-            style={{
-              minHeight: "60vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              padding: "140px 40px 60px",
-              maxWidth: 1600,
-              margin: "0 auto",
-              position: "relative",
-            }}
+            className="hero-pad"
+            style={{ maxWidth: 1600, margin: "0 auto", position: "relative" }}
           >
             <div
               style={{
@@ -433,78 +230,49 @@ export default function PricingPage() {
             >
               <div
                 style={{
-                  width: 280,
-                  height: 280,
+                  width: "clamp(160px,22vw,280px)",
+                  height: "clamp(160px,22vw,280px)",
                   border: "1px solid var(--cg)",
                   borderRadius: "50%",
                 }}
               />
             </div>
+
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                marginBottom: 28,
-              }}
             >
-              <div style={{ height: 1, width: 32, background: "var(--cg)" }} />
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.45em",
-                  textTransform: "uppercase",
-                  color: "var(--cg)",
-                }}
-              >
-                Simple Pricing
-              </span>
+              <SectionTag label="Simple Pricing" />
             </motion.div>
 
-            <div style={{ overflow: "hidden" }}>
-              <motion.h1
-                className="dp"
-                style={{
-                  fontSize: "clamp(3rem, 8vw, 110px)",
-                  lineHeight: 0.9,
-                  color: "var(--fg)",
-                }}
-                initial={{ y: 110, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.5,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                Invest in Your
-              </motion.h1>
-            </div>
-            <div style={{ overflow: "hidden" }}>
-              <motion.h1
-                className="dp gg"
-                style={{ fontSize: "clamp(3rem, 8vw, 110px)", lineHeight: 0.9 }}
-                initial={{ y: 110, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{
-                  duration: 1.2,
-                  delay: 0.65,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                Business Empire.
-              </motion.h1>
-            </div>
+            {["Invest in Your", "Business Empire."].map((line, i) => (
+              <div key={i} className="lo">
+                <motion.h1
+                  className={i === 1 ? "dp gg" : isDark ? "dp text-amber-50 italic" : "dp"}
+                  style={{
+                    fontSize: "clamp(2.5rem,8vw,110px)",
+                    lineHeight: 0.9,
+                  }}
+                  initial={{ y: 110, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{
+                    duration: 1.2,
+                    delay: 0.5 + i * 0.15,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                >
+                  {line}
+                </motion.h1>
+              </div>
+            ))}
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 1 }}
               style={{
-                fontSize: "0.9rem",
+                fontSize: ".9rem",
                 color: "var(--fg2)",
                 lineHeight: 1.9,
                 maxWidth: 440,
@@ -525,14 +293,15 @@ export default function PricingPage() {
                 alignItems: "center",
                 gap: 20,
                 marginTop: 40,
+                flexWrap: "wrap",
               }}
             >
               <span
                 style={{
-                  fontSize: "0.75rem",
+                  fontSize: ".75rem",
                   color: !annual ? "var(--cg)" : "var(--fg3)",
-                  letterSpacing: "0.1em",
-                  transition: "color 0.3s",
+                  letterSpacing: ".1em",
+                  transition: "color .3s",
                 }}
               >
                 Monthly
@@ -547,7 +316,7 @@ export default function PricingPage() {
                   border: "1px solid var(--brd)",
                   borderRadius: 14,
                   position: "relative",
-                  transition: "all 0.4s",
+                  transition: "all .4s",
                 }}
               >
                 <motion.div
@@ -565,10 +334,10 @@ export default function PricingPage() {
               </button>
               <span
                 style={{
-                  fontSize: "0.75rem",
+                  fontSize: ".75rem",
                   color: annual ? "var(--cg)" : "var(--fg3)",
-                  letterSpacing: "0.1em",
-                  transition: "color 0.3s",
+                  letterSpacing: ".1em",
+                  transition: "color .3s",
                 }}
               >
                 Annual <span style={{ color: "var(--cg)" }}>— Save 17%</span>
@@ -585,7 +354,7 @@ export default function PricingPage() {
               overflow: "hidden",
             }}
           >
-            <div className="marquee-track">
+            <div className="mq">
               {[...Array(6)].flatMap((_, ri) =>
                 [
                   "AI Builder",
@@ -608,8 +377,8 @@ export default function PricingPage() {
                   >
                     <span
                       style={{
-                        fontSize: "0.6rem",
-                        letterSpacing: "0.42em",
+                        fontSize: ".6rem",
+                        letterSpacing: ".42em",
                         textTransform: "uppercase",
                         color: "var(--fg3)",
                         whiteSpace: "nowrap",
@@ -623,7 +392,7 @@ export default function PricingPage() {
                         cy="2"
                         r="2"
                         fill="var(--cg)"
-                        opacity="0.35"
+                        opacity=".35"
                       />
                     </svg>
                   </div>
@@ -634,20 +403,10 @@ export default function PricingPage() {
 
           {/* PLANS */}
           <section
-            style={{ padding: "80px 40px", maxWidth: 1600, margin: "0 auto" }}
+            className="sec-pad"
+            style={{ maxWidth: 1600, margin: "0 auto" }}
           >
-            <div
-              className="plans-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
-                gap: 1,
-                border: "1px solid var(--brd)",
-                borderRadius: 4,
-                overflow: "hidden",
-                background: "var(--brd)",
-              }}
-            >
+            <div className="plans-grid price-grid">
               {PLANS.map((plan, i) => (
                 <div
                   key={i}
@@ -656,7 +415,7 @@ export default function PricingPage() {
                     background: plan.hi
                       ? "linear-gradient(160deg,var(--bg2),var(--bg))"
                       : "var(--bg)",
-                    padding: "40px 36px",
+                    padding: "clamp(28px,4vw,40px) clamp(22px,3.5vw,36px)",
                     position: "relative",
                   }}
                 >
@@ -685,8 +444,8 @@ export default function PricingPage() {
                     >
                       <span
                         style={{
-                          fontSize: "0.55rem",
-                          letterSpacing: "0.32em",
+                          fontSize: ".55rem",
+                          letterSpacing: ".32em",
                           textTransform: "uppercase",
                           color: "var(--cg)",
                         }}
@@ -699,7 +458,7 @@ export default function PricingPage() {
                     className="dp"
                     style={{
                       fontSize: 20,
-                      letterSpacing: "0.15em",
+                      letterSpacing: ".15em",
                       textTransform: "uppercase",
                       color: "var(--fg)",
                       opacity: 0.7,
@@ -710,7 +469,7 @@ export default function PricingPage() {
                   </h3>
                   <p
                     style={{
-                      fontSize: "0.72rem",
+                      fontSize: ".72rem",
                       color: "var(--fg3)",
                       marginBottom: 28,
                       lineHeight: 1.6,
@@ -733,7 +492,7 @@ export default function PricingPage() {
                         </span>
                         <span
                           style={{
-                            fontSize: "0.72rem",
+                            fontSize: ".72rem",
                             color: "var(--fg3)",
                             marginLeft: 6,
                           }}
@@ -743,7 +502,7 @@ export default function PricingPage() {
                         {annual && (
                           <p
                             style={{
-                              fontSize: "0.65rem",
+                              fontSize: ".65rem",
                               color: "var(--cg)",
                               marginTop: 4,
                               opacity: 0.7,
@@ -763,7 +522,7 @@ export default function PricingPage() {
                         </span>
                         <p
                           style={{
-                            fontSize: "0.65rem",
+                            fontSize: ".65rem",
                             color: "var(--fg3)",
                             marginTop: 4,
                           }}
@@ -774,31 +533,33 @@ export default function PricingPage() {
                     )}
                   </div>
 
-                  <Link
-                    href={plan.monthlyPrice ? "/signup" : "/contact"}
-                    style={{ display: "block", marginBottom: 32 }}
-                  >
-                    <button
-                      className={plan.hi ? "bg-btn" : "bo-btn"}
-                      style={{
-                        width: "100%",
-                        padding: "14px 0",
-                        borderRadius: 3,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                      }}
+                  <Mag style={{ display: "block", marginBottom: 28 }}>
+                    <Link
+                      href={plan.monthlyPrice ? "/signup" : "/contact"}
+                      style={{ display: "block" }}
                     >
-                      {plan.cta} <ArrowRight size={13} />
-                    </button>
-                  </Link>
+                      <button
+                        className={plan.hi ? "bg-btn" : "bo-btn"}
+                        style={{
+                          width: "100%",
+                          padding: "14px 0",
+                          borderRadius: 3,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                      >
+                        {plan.cta} <ArrowRight size={13} />
+                      </button>
+                    </Link>
+                  </Mag>
 
                   <div
                     style={{
                       height: 1,
                       background: "var(--brd)",
-                      marginBottom: 28,
+                      marginBottom: 24,
                     }}
                   />
 
@@ -826,14 +587,13 @@ export default function PricingPage() {
                           style={{ flexShrink: 0 }}
                         />
                         <span
-                          style={{ fontSize: "0.78rem", color: "var(--fg2)" }}
+                          style={{ fontSize: ".78rem", color: "var(--fg2)" }}
                         >
                           {f}
                         </span>
                       </li>
                     ))}
                   </ul>
-
                   {plan.notIncluded.length > 0 && (
                     <ul
                       style={{
@@ -858,7 +618,7 @@ export default function PricingPage() {
                             style={{ flexShrink: 0 }}
                           />
                           <span
-                            style={{ fontSize: "0.78rem", color: "var(--fg3)" }}
+                            style={{ fontSize: ".78rem", color: "var(--fg3)" }}
                           >
                             {f}
                           </span>
@@ -871,35 +631,14 @@ export default function PricingPage() {
             </div>
           </section>
 
-          {/* COMPARISON TABLE */}
-          <section style={{ padding: "80px 40px", background: "var(--bg2)" }}>
+          {/* COMPARISON */}
+          <section className="sec-pad" style={{ background: "var(--bg2)" }}>
             <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  marginBottom: 18,
-                }}
-              >
-                <div
-                  style={{ height: 1, width: 28, background: "var(--cg)" }}
-                />
-                <span
-                  style={{
-                    fontSize: "0.6rem",
-                    letterSpacing: "0.42em",
-                    textTransform: "uppercase",
-                    color: "var(--cg)",
-                  }}
-                >
-                  Compare
-                </span>
-              </div>
+              <SectionTag label="Compare" />
               <motion.h2
                 className="dp"
                 style={{
-                  fontSize: "clamp(2rem, 4vw, 52px)",
+                  fontSize: "clamp(2rem,4vw,52px)",
                   lineHeight: 1.05,
                   color: "var(--fg)",
                   marginBottom: 48,
@@ -911,18 +650,17 @@ export default function PricingPage() {
               >
                 Side-by-Side <span className="italic gg">Comparison</span>
               </motion.h2>
-
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <div className="compare-wrap">
+                <table>
                   <thead>
                     <tr style={{ borderBottom: "1px solid var(--brd)" }}>
                       <th
                         style={{
                           textAlign: "left",
-                          padding: "16px 20px",
+                          padding: "clamp(10px,2vw,16px) clamp(12px,2vw,20px)",
                           fontFamily: "'DM Sans'",
-                          fontSize: "0.7rem",
-                          letterSpacing: "0.25em",
+                          fontSize: ".7rem",
+                          letterSpacing: ".25em",
                           textTransform: "uppercase",
                           color: "var(--fg3)",
                           fontWeight: 400,
@@ -935,7 +673,8 @@ export default function PricingPage() {
                           key={i}
                           style={{
                             textAlign: "center",
-                            padding: "16px 20px",
+                            padding:
+                              "clamp(10px,2vw,16px) clamp(12px,2vw,20px)",
                             fontFamily: "'Playfair Display'",
                             fontSize: 16,
                             color: i === 1 ? "var(--cg)" : "var(--fg)",
@@ -953,14 +692,14 @@ export default function PricingPage() {
                         key={i}
                         className="compare-row"
                         style={{
-                          borderBottom: "1px solid rgba(191,160,106,0.05)",
-                          transition: "background 0.3s",
+                          borderBottom: "1px solid rgba(191,160,106,.05)",
+                          transition: "background .3s",
                         }}
                       >
                         <td
                           style={{
-                            padding: "14px 20px",
-                            fontSize: "0.82rem",
+                            padding: "14px clamp(12px,2vw,20px)",
+                            fontSize: ".82rem",
                             color: "var(--fg2)",
                           }}
                         >
@@ -972,7 +711,7 @@ export default function PricingPage() {
                               key={ci}
                               style={{
                                 textAlign: "center",
-                                padding: "14px 20px",
+                                padding: "14px clamp(12px,2vw,20px)",
                               }}
                             >
                               {typeof val === "boolean" ? (
@@ -994,7 +733,7 @@ export default function PricingPage() {
                               ) : (
                                 <span
                                   style={{
-                                    fontSize: "0.78rem",
+                                    fontSize: ".78rem",
                                     color:
                                       ci === 1 ? "var(--cg)" : "var(--fg2)",
                                   }}
@@ -1015,32 +754,14 @@ export default function PricingPage() {
 
           {/* FAQ */}
           <section
-            style={{ padding: "80px 40px", maxWidth: 900, margin: "0 auto" }}
+            className="sec-pad"
+            style={{ maxWidth: 900, margin: "0 auto" }}
           >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                marginBottom: 18,
-              }}
-            >
-              <div style={{ height: 1, width: 28, background: "var(--cg)" }} />
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  letterSpacing: "0.42em",
-                  textTransform: "uppercase",
-                  color: "var(--cg)",
-                }}
-              >
-                FAQ
-              </span>
-            </div>
+            <SectionTag label="FAQ" />
             <motion.h2
               className="dp"
               style={{
-                fontSize: "clamp(2rem, 4vw, 52px)",
+                fontSize: "clamp(2rem,4vw,52px)",
                 lineHeight: 1.05,
                 color: "var(--fg)",
                 marginBottom: 48,
@@ -1052,8 +773,7 @@ export default function PricingPage() {
             >
               Questions <span className="italic gg">Answered</span>
             </motion.h2>
-
-            <div style={{ display: "flex", flexDirection: "column" }}>
+            <div>
               {FAQS.map((faq, i) => (
                 <motion.div
                   key={i}
@@ -1074,11 +794,15 @@ export default function PricingPage() {
                       alignItems: "center",
                       background: "none",
                       textAlign: "left",
+                      gap: 16,
                     }}
                   >
                     <span
                       className="dp"
-                      style={{ fontSize: 18, color: "var(--fg)" }}
+                      style={{
+                        fontSize: "clamp(15px,2vw,18px)",
+                        color: "var(--fg)",
+                      }}
                     >
                       {faq.q}
                     </span>
@@ -1089,7 +813,6 @@ export default function PricingPage() {
                         color: "var(--cg)",
                         fontSize: 20,
                         flexShrink: 0,
-                        marginLeft: 16,
                       }}
                     >
                       +
@@ -1107,7 +830,7 @@ export default function PricingPage() {
                         <p
                           style={{
                             color: "var(--fg2)",
-                            fontSize: "0.87rem",
+                            fontSize: ".87rem",
                             lineHeight: 1.9,
                           }}
                         >
@@ -1123,8 +846,8 @@ export default function PricingPage() {
 
           {/* CTA */}
           <section
+            className="sec-pad"
             style={{
-              padding: "100px 40px",
               textAlign: "center",
               background: "var(--bg2)",
               position: "relative",
@@ -1158,7 +881,7 @@ export default function PricingPage() {
               <h2
                 className="dp"
                 style={{
-                  fontSize: "clamp(2rem, 4.5vw, 58px)",
+                  fontSize: "clamp(2rem,4.5vw,58px)",
                   lineHeight: 1.1,
                   color: "var(--fg)",
                   marginBottom: 20,
@@ -1170,79 +893,35 @@ export default function PricingPage() {
               <p
                 style={{
                   color: "var(--fg2)",
-                  fontSize: "0.87rem",
+                  fontSize: ".87rem",
                   marginBottom: 36,
                   lineHeight: 1.85,
                 }}
               >
                 Start building your business empire today.
               </p>
-              <Link href="/signup">
-                <button
-                  className="bg-btn"
-                  style={{
-                    padding: "16px 56px",
-                    borderRadius: 3,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  Start Free Trial <ArrowRight size={14} />
-                </button>
-              </Link>
+              <div className="cta-btns">
+                <Mag>
+                  <Link href="/signup">
+                    <button
+                      className="bg-btn"
+                      style={{
+                        padding: "16px 56px",
+                        borderRadius: 3,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
+                    >
+                      Start Free Trial <ArrowRight size={14} />
+                    </button>
+                  </Link>
+                </Mag>
+              </div>
             </motion.div>
           </section>
 
-          {/* FOOTER */}
-          <footer
-            style={{
-              borderTop: "1px solid var(--brd)",
-              padding: "36px 40px",
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 20,
-            }}
-          >
-            <Link href="/">
-              <span
-                className="dp gg"
-                style={{
-                  fontSize: 18,
-                  letterSpacing: "0.35em",
-                  fontWeight: 600,
-                }}
-              >
-                SUULP
-              </span>
-            </Link>
-            <div style={{ display: "flex", gap: 36 }}>
-              {[
-                "Features",
-                "Pricing",
-                "About",
-                "Contact",
-                "Privacy",
-                "Terms",
-              ].map((l) => (
-                <Link key={l} href={`/${l.toLowerCase()}`} className="na">
-                  {l}
-                </Link>
-              ))}
-            </div>
-            <p
-              style={{
-                fontSize: "0.6rem",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "var(--fg3)",
-              }}
-            >
-              © 2026 Suulp
-            </p>
-          </footer>
+          <RoyalFooter />
         </main>
       </div>
     </>
