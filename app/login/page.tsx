@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Loader, ArrowRight } from "lucide-react";
 import { LiquidCursor } from "@/components/navbar";
+import { useTheme } from "@/components/ThemeContext";
 
 const SHARED_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
@@ -45,13 +46,14 @@ const SHARED_CSS = `
 `;
 
 /* ═══ LOGIN PAGE ═══ */
-export default function LoginPage() {
-  const [dark, setDark] = useState(true);
+export function LoginPage() {
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const { useRouter, useSearchParams } = require("next/navigation");
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams?.get("message");
@@ -200,7 +202,7 @@ export default function LoginPage() {
               </Link>
               <button
                 data-hover="true"
-                onClick={() => setDark(!dark)}
+                onClick={() => setDark()}
                 style={{
                   padding: "6px 14px",
                   borderRadius: 20,

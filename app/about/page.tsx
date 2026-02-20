@@ -3,6 +3,7 @@
 // ABOUT PAGE
 // ═══════════════════════════════════════════════════════════════
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import { motion, useScroll, useSpring, useMotionValue } from "framer-motion";
 import Link from "next/link";
 import {
@@ -61,7 +62,7 @@ function RoyalNav({
   active,
 }: {
   dark: boolean;
-  setDark: (v: boolean) => void;
+  setDark: () => void;
   active: string;
 }) {
   return (
@@ -107,7 +108,7 @@ function RoyalNav({
       <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
         <button
           data-hover="true"
-          onClick={() => setDark(!dark)}
+          onClick={() => setDark()}
           style={{
             display: "flex",
             alignItems: "center",
@@ -333,7 +334,7 @@ const STATS = [
 ];
 
 export function AboutPage() {
-  const [dark, setDark] = useState(true);
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });

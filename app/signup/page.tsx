@@ -1,6 +1,7 @@
 "use client";
 
 import { LiquidCursor } from "@/components/navbar";
+import { useTheme } from "@/components/ThemeContext";
 import { supabase } from "@/lib/supabase";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Loader } from "lucide-react";
@@ -45,7 +46,7 @@ const SHARED_CSS = `
 
 /* ═══ SIGNUP PAGE ═══ */
 export function SignupPage() {
-  const [dark, setDark] = useState(true);
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     fullName: "",
@@ -285,7 +286,7 @@ export function SignupPage() {
             >
               <button
                 data-hover="true"
-                onClick={() => setDark(!dark)}
+                onClick={() => setDark()}
                 style={{
                   padding: "6px 14px",
                   borderRadius: 20,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import {
   motion,
   useScroll,
@@ -238,7 +239,7 @@ const FAQS = [
 ];
 
 export default function PricingPage() {
-  const [dark, setDark] = useState(true);
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const [annual, setAnnual] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -375,7 +376,7 @@ export default function PricingPage() {
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
               <button
                 data-hover="true"
-                onClick={() => setDark(!dark)}
+                onClick={() => setDark()}
                 style={{
                   display: "flex",
                   alignItems: "center",

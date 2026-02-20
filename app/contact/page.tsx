@@ -22,6 +22,7 @@ import {
   Loader,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useTheme } from "@/components/ThemeContext";
 
 const SHARED_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&display=swap');
@@ -169,7 +170,7 @@ function RoyalNav({ dark, setDark, active }: any) {
       <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
         <button
           data-hover="true"
-          onClick={() => setDark(!dark)}
+          onClick={() => setDark()}
           style={{
             display: "flex",
             alignItems: "center",
@@ -255,7 +256,7 @@ function RoyalFooter() {
 
 /* ═══ CONTACT PAGE ═══ */
 export default function ContactPage() {
-  const [dark, setDark] = useState(true);
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const [form, setForm] = useState({
     name: "",
     email: "",

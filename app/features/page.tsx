@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTheme } from "@/components/ThemeContext";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useScroll, useSpring, useMotionValue } from "framer-motion";
@@ -196,7 +197,7 @@ const EXTRAS = [
 ];
 
 export default function FeaturesPage() {
-  const [dark, setDark] = useState(true);
+  const { isDark: dark, toggleTheme: setDark } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -329,7 +330,7 @@ export default function FeaturesPage() {
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
               <button
                 data-hover="true"
-                onClick={() => setDark(!dark)}
+                onClick={() => setDark()}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -473,7 +474,7 @@ export default function FeaturesPage() {
                   fontSize: "clamp(3.5rem, 9vw, 120px)",
                   lineHeight: 0.9,
                   letterSpacing: "-0.02em",
-                  color: "rgba(243,238,229,0.88)",
+                  color: "rgba(225, 206, 172, 0.88)",
                   marginBottom: 4,
                 }}
                 initial={{ y: 120, opacity: 0 }}
@@ -495,7 +496,7 @@ export default function FeaturesPage() {
                   lineHeight: 0.9,
                   letterSpacing: "-0.02em",
                   fontStyle: "italic",
-                  color: "rgba(243,238,229,0.22)",
+                  color: "rgba(82, 72, 55, 0.22)",
                 }}
                 initial={{ y: 120, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
