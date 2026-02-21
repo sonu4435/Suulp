@@ -510,7 +510,7 @@ const FEATURES = [
     icon: Download,
     n: "06",
     title: "Export Your Code",
-    desc: "Own your work forever. Export clean Next.js code at any time. No vendor lock-in. Your business, your codebase.",
+    desc: "Own your work forever. Export clean code at any time. No vendor lock-in. Your business, your codebase.",
   },
 ];
 
@@ -543,7 +543,7 @@ const FLIP_CARDS = [
   {
     tag: "Ownership",
     front: "Your code, always",
-    back: "Export production-ready Next.js at any time. The only platform that hands you the keys instead of locking the door.",
+    back: "Export production-ready code at any time. The only platform that hands you the keys instead of locking the door.",
   },
 ];
 
@@ -1206,11 +1206,11 @@ export default function Home() {
                     marginBottom: 24,
                   }}
                 >
-                  Suulp is a royal SaaS platform builder — think Zoho meets
-                  Webflow meets ElevenLabs. One workspace: build your website
-                  with AI, manage customers with CRM & CSM, deploy a voice AI
-                  agent, publish native mobile apps, and export clean production
-                  code. No vendor lock-in. No 6-tool juggling act.
+                  Suulp gives you the infrastructure to run a modern company
+                  from a single workspace. Launch your website with AI. Manage
+                  customers and revenue. Deploy intelligent voice agents. Ship
+                  mobile apps. Control your data and your code — without
+                  stitching tools together.
                 </p>
                 <p
                   style={{
@@ -1225,10 +1225,10 @@ export default function Home() {
                   different tools together just to run one business.
                 </p>
                 {[
-                  "Describe your business → AI builds your full site in 60s",
-                  "CMS, CRM, CSM, AI Voice — unified, not bolted together",
-                  "Export your Next.js code at any time — own it forever",
-                  "Community votes on what features get built next",
+                  "Describe your business → your site goes live in under a minute",
+                  "Website, CRM, customer success, automation — built as one system",
+                  "Export your code and data anytime — full ownership",
+                  "Product roadmap shaped by the community",
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -2096,7 +2096,7 @@ export default function Home() {
                   name: "Aiko S.",
                   co: "NomadDesk",
                   quote:
-                    "Exported our Next.js code when we outgrew the platform. Zero lock-in.",
+                    "Exported our code when we outgrew the platform. Zero lock-in.",
                 },
                 {
                   name: "Lena M.",
